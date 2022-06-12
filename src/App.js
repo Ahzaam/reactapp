@@ -1,45 +1,74 @@
-// import logo from './logo.svg';
-import './App.css';
+import {useEffect, useState} from 'react';
+import './app.css'
+import MovieCard from "./movieCard";
+import SearchIcon from "./search.svg";
 
-// Person function
+// 547d4cbc
 
-const Person = (props) => {
-  return (
-    <>
-      <h1>Name :{props.name}</h1>
-      <h2>Last Name :{props.name2}</h2>
-    </>
-  )
-}
+const API_URL = 'https://www.omdbapi.com?apikey=547d4cbc';
 
-
-// App
-function App() {
-  const name = 'Ahzam'
-  const name2 = 'A380'
-  const isTrue  = false
+const movie1 = {Title: 'Maverick', 
+    Year: '1994', 
+    imdbID: 'tt0110478', 
+    Type: 'movie', 
+    Poster: "https://m.media-amazon.com/images/M/MV5BY2I1OTY2NmUtMGVlZi00NjNmLThkNTgtMjExMzRhOTM2MDJiXkEyXkFqcGdeQXVyNDk3NzU2MTQ@._V1_SX300.jpg"
+    }
 
 
-  return (
-    <div className="App">
-      <h1 cla>Hello {name} {2 + 2}!</h1>
-      {isTrue ?(
-        <>
-          test
-        </>
-        ): (
-          <>
-            <h1>hi {name}!</h1>
-            <h2>There in no name</h2>
-            <Person name={name} name2={name2}/>
+const App = () => {
+    const [movies, setMovies] = useState([]);
+    const [searchTerm, setrSearchTerm] = useState('');
 
-            <Person name={name} name2={name}/>
+
+    const searchMovies = async (title) => {
+        const response = await fetch(`${API_URL}&s=${title}`);
+        const data = await response.json();
+
+        setMovies(data.Search)
+    }
+
+    useEffect(() => {
+        searchMovies('inception');
+    }, [])
+
+    return(
+        
+        <div className="app">
+            <h1>GLiDE Movies</h1>
+            <div className='search'>
+                <input
+                 placeholder='Search for movies'
+                 value={searchTerm}
+                 onChange={(e) => {
+                    setrSearchTerm(e.target.value)
+                 }}
+                 />
+
+                <img 
+                    src={SearchIcon}    
+                    alt='Search'
+                    onClick={() => {searchMovies(searchTerm)}}
+                />
+            </div>
+            {
+                movies?.length > 0 
+                ? (
+                    <div className='container'>
+                     {movies.map((movie) => 
+                        <MovieCard movie={movie} />
+                     )}
+                    </div>
+                ): (
+                    <div className='empty'>
+                        <h2>No Movies Found</h2>
+                    </div>
+                )
+            }
+
+
             
-          </>
-          
-        )} 
-    </div>
-  );
+        </div>
+    );
 }
 
 export default App;
