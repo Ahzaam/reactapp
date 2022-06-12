@@ -28,7 +28,7 @@ const App = () => {
     }
 
     useEffect(() => {
-        searchMovies('inception');
+        searchMovies('2022');
     }, [])
 
     return(
